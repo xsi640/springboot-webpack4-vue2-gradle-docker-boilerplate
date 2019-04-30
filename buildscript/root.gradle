@@ -1,0 +1,15 @@
+sourceSets {
+    main {
+        resources {
+            exclude '**/web/**'
+        }
+    }
+}
+
+processResources {
+    from(sourceSets['main'].resources) {
+        include '**/*.yml'
+    }
+}
+
+apply from: rootProject.file("buildscript/docker.gradle")

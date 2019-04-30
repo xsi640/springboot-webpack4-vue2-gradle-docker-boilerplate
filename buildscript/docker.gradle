@@ -1,0 +1,44 @@
+static void replaceFile(String path, String oldString, String newString) {
+    List<String> lines = new ArrayList<>();
+    new File(path).withReader("UTF-8") { reader ->
+        reader.eachLine {
+            lines.add(it.replace(oldString, newString))
+        }
+    }
+    new File(path).withWriter('UTF-8') { writer ->
+        lines.each {
+            writer.write(it + "\r\n")
+        }
+    }
+}
+
+task("docker") {
+    doLast {
+        File outputDir = new File(rootProject.buildDir, "docker")
+        delete(outputDir)
+        //copy docker file
+        copy {
+            from(rootProject.file("buildscript/docker/"))
+            into(outputDir)
+        }
+        //copy jars
+        copy {
+            from(rootProject.buildDir.absolutePath + "/libs")
+            into(outputDir)
+        }
+        //replace dockerfile
+        replaceFile(outputDir.absolutePath + "/Dockerfile", "fixed-app", rootProject.name + "-" + rootProject.version)
+
+        String imageName = "$dockerRepo/$rootProject.name:$rootProject.version"
+        //build docker image
+        println("exec docker build -t $imageName $outputDir.absolutePath")
+        exec {
+            commandLine "docker", "build", "-t", imageName, outputDir
+        }
+        //push docker image
+        println("exec docker push $imageName")
+        exec {
+            commandLine "docker", "push", imageName
+        }
+    }
+}
