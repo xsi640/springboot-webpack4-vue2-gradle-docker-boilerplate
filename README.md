@@ -3,9 +3,7 @@
 
 #### 前端脚手架
 
-相见
-
-/src/main/resources/web/package.json
+相见/src/main/resources/web/package.json
 
 运行`npm run dev`调试前端代码，webpack自动开启3000端口，并代理localhost的8080端口进行调试。
 
@@ -19,7 +17,7 @@ gradle自动化构建springboot项目。
 
 修改settings.gradle文件中的rootProject.name（项目名称）。
 
-修改build.gradle文件中的ext.dockerRepo(docker私服地址)。
+修改build.gradle文件中的ext.dockerRepo(docker私服地址)；修改version相当于docker的tag。
 
 运行`./gradlew build`编译java代码
 
